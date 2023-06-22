@@ -35,6 +35,8 @@ class Tests {
         )
     }
 
+    fun String?.replaceNbsps(): String? = this?.replace(' ', ' ')?.replace(' ', ' ')
+
     @Test
     fun testDotCommaMoneyFormat() {
         assertEquals("1,000,000", DotCommaMoneyFormat.formatMoney(1_000_000))
@@ -51,11 +53,11 @@ class Tests {
 
     @Test
     fun testCommaSpaceMoneyFormat() {
-        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(1_000_000))
-        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(AtomicLong(1_000_000)))
-        assertEquals("-1 000 000", CommaSpaceMoneyFormat.formatMoney((-1_000_000).toBigDecimal()))
-        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(1_000_000.00))
-        assertEquals("1 000 000,12", CommaSpaceMoneyFormat.formatMoney(1_000_000.12))
+        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(1_000_000).replaceNbsps())
+        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(AtomicLong(1_000_000)).replaceNbsps())
+        assertEquals("-1 000 000", CommaSpaceMoneyFormat.formatMoney((-1_000_000).toBigDecimal()).replaceNbsps())
+        assertEquals("1 000 000", CommaSpaceMoneyFormat.formatMoney(1_000_000.00).replaceNbsps())
+        assertEquals("1 000 000,12", CommaSpaceMoneyFormat.formatMoney(1_000_000.12).replaceNbsps())
         assertEquals("0", CommaSpaceMoneyFormat.formatMoney(-0.0001))
         assertEquals("1000000,00", CommaSpaceMoneyFormat.formatMoney2(1_000_000))
         assertEquals("1000000,00", CommaSpaceMoneyFormat.formatMoney2(1_000_000.00))
@@ -70,9 +72,9 @@ class Tests {
         )
         val date = dateTime.toLocalDate()
 
-        assertEquals("2020-01-02 22:33", DateTimeFormatEurope.formatDateTime(dateTime))
-        assertEquals("2020-01-02 22:33:44", DateTimeFormatEurope.formatDateTimeSec(dateTime))
-        assertEquals("2020-01-02 22:33:44.555", DateTimeFormatEurope.formatDateTimeMillis(dateTime))
+        assertEquals("2020-01-02 22:33", DateTimeFormatEurope.formatDateTime(dateTime).replaceNbsps())
+        assertEquals("2020-01-02 22:33:44", DateTimeFormatEurope.formatDateTimeSec(dateTime).replaceNbsps())
+        assertEquals("2020-01-02 22:33:44.555", DateTimeFormatEurope.formatDateTimeMillis(dateTime).replaceNbsps())
 
         assertEquals("2020-01-02", DateTimeFormatEurope.formatDate(date))
 
@@ -88,9 +90,9 @@ class Tests {
         )
         val date = dateTime.toLocalDate()
 
-        assertEquals("01/02/2020 10:33pm", DateTimeFormatUSA.formatDateTime(dateTime))
-        assertEquals("01/02/2020 10:33:44pm", DateTimeFormatUSA.formatDateTimeSec(dateTime))
-        assertEquals("01/02/2020 10:33:44pm.555", DateTimeFormatUSA.formatDateTimeMillis(dateTime))
+        assertEquals("01/02/2020 10:33pm", DateTimeFormatUSA.formatDateTime(dateTime).replaceNbsps())
+        assertEquals("01/02/2020 10:33:44pm", DateTimeFormatUSA.formatDateTimeSec(dateTime).replaceNbsps())
+        assertEquals("01/02/2020 10:33:44pm.555", DateTimeFormatUSA.formatDateTimeMillis(dateTime).replaceNbsps())
 
         assertEquals("01/02/2020", DateTimeFormatUSA.formatDate(date))
 

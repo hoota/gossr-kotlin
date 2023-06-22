@@ -52,9 +52,9 @@ abstract class GossrDateTimeFormats : GossrDateTimeFormatter {
 
 object DateTimeFormatEurope : GossrDateTimeFormats() {
 
-    override val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-    override val dateTimeFormatSec = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    override val dateTimeFormatMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    override val dateTimeFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+    override val dateTimeFormatSec = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    override val dateTimeFormatMillis = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     override val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     override val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
     override val timeFormatSec = DateTimeFormatter.ofPattern("HH:mm:ss")
@@ -62,9 +62,9 @@ object DateTimeFormatEurope : GossrDateTimeFormats() {
 
 object DateTimeFormatUSA : GossrDateTimeFormats() {
 
-    override val dateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mma")
-    override val dateTimeFormatSec = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ssa")
-    override val dateTimeFormatMillis = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ssa.SSS")
+    override val dateTimeFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mma")
+    override val dateTimeFormatSec = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ssa")
+    override val dateTimeFormatMillis = DateTimeFormatter.ofPattern("MM/dd/yyyy h:mm:ssa.SSS")
     override val dateFormat = DateTimeFormatter.ofPattern("MM/dd/yyyy")
     override val timeFormat = DateTimeFormatter.ofPattern("h:mma")
     override val timeFormatSec = DateTimeFormatter.ofPattern("h:mm:ssa")
