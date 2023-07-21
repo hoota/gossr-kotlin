@@ -60,53 +60,118 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     /** shorthand for DIV align=center */
     inline fun CENTER(body: () -> Unit) = EL("CENTER", body = body)
+
     inline fun DIV(body: () -> Unit) = EL("DIV", body = body)
-    inline fun DIV(clz: String, body: () -> Unit) = EL("DIV") {
-        classes(clz)
+    inline fun DIV(classes: String, body: () -> Unit) = DIV {
+        classes(classes)
         body()
     }
 
     /** small text style */
     inline fun SMALL(body: () -> Unit) = EL("SMALL", body = body)
+    inline fun SMALL(classes: String, body: () -> Unit) = SMALL {
+        classes(classes)
+        body()
+    }
+
     /** strike-through text */
     inline fun STRIKE(body: () -> Unit) = EL("STRIKE", body = body)
+    inline fun STRIKE(classes: String, body: () -> Unit) = STRIKE {
+        classes(classes)
+        body()
+    }
+
     /** strong emphasis */
     inline fun STRONG(body: () -> Unit) = EL("STRONG", body = body)
+    inline fun STRONG(classes: String, body: () -> Unit) = STRONG {
+        classes(classes)
+        body()
+    }
+
     /** subscript */
     inline fun SUB(body: () -> Unit) = EL("SUB", body = body)
+    inline fun SUB(classes: String, body: () -> Unit) = SUB {
+        classes(classes)
+        body()
+    }
+
     /** superscript */
     inline fun SUP(body: () -> Unit) = EL("SUP", body = body)
+    inline fun SUP(classes: String, body: () -> Unit) = SUP {
+        classes(classes)
+        body()
+    }
 
     inline fun SPAN(body: () -> Unit) = EL("SPAN", body = body)
-    inline fun SPAN(clz: String, body: () -> Unit) = EL("SPAN") {
-        classes(clz)
+    inline fun SPAN(classes: String, body: () -> Unit) = SPAN {
+        classes(classes)
         body()
     }
 
     inline fun LI(body: () -> Unit) = EL("LI", body = body)
+    inline fun LI(classes: String, body: () -> Unit) = LI {
+        classes(classes)
+        body()
+    }
+
     inline fun OL(body: () -> Unit) = EL("OL", body = body)
+    inline fun OL(classes: String, body: () -> Unit) = OL {
+        classes(classes)
+        body()
+    }
+
     inline fun TABLE(body: () -> Unit) = EL("TABLE", body = body)
+    inline fun TABLE(classes: String, body: () -> Unit) = TABLE {
+        classes(classes)
+        body()
+    }
+
     inline fun TBODY(body: () -> Unit) = EL("TBODY", body = body)
     inline fun THEAD(body: () -> Unit) = EL("THEAD", body = body)
     inline fun TFOOT(body: () -> Unit) = EL("TFOOT", body = body)
+
     inline fun TH(body: () -> Unit) = EL("TH", body = body)
     inline fun TR(body: () -> Unit) = EL("TR", body = body)
     inline fun TD(body: () -> Unit) = EL("TD", body = body)
 
     inline fun PRE(body: () -> Unit) = EL("PRE", body = body)
+    inline fun PRE(classes: String, body: () -> Unit) = PRE {
+        classes(classes)
+        body()
+    }
+
     inline fun TT(body: () -> Unit) = EL("TT", body = body)
+    inline fun TT(classes: String, body: () -> Unit) = TT {
+        classes(classes)
+        body()
+    }
+
     /** anchor */
     inline fun A(body: () -> Unit) = EL("A", body = body)
     inline fun B(body: () -> Unit) = EL("B", body = body)
+
     inline fun P(body: () -> Unit) = EL("P", body = body)
+    inline fun P(classes: String, body: () -> Unit) = P {
+        classes(classes)
+        body()
+    }
+
     inline fun S(body: () -> Unit) = EL("S", body = body)
     inline fun I(body: () -> Unit) = EL("I", body = body)
+
     /** underlined text style */
     inline fun U(body: () -> Unit) = EL("U", body = body)
+
     /** short inline quotation */
     inline fun Q(body: () -> Unit) = EL("Q", body = body)
+
     /** unordered list */
     inline fun UL(body: () -> Unit) = EL("UL", body = body)
+    inline fun UL(classes: String, body: () -> Unit) = UL {
+        classes(classes)
+        body()
+    }
+
     inline fun H1(body: () -> Unit) = EL("H1", body = body)
     inline fun H2(body: () -> Unit) = EL("H2", body = body)
     inline fun H3(body: () -> Unit) = EL("H3", body = body)
@@ -114,8 +179,15 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     inline fun H5(body: () -> Unit) = EL("H5", body = body)
     inline fun H6(body: () -> Unit) = EL("H6", body = body)
     inline fun NOBR(body: () -> Unit) = EL("NOBR", body = body)
+
     fun BR() = EL("BR", noBody = true) {}
+
     inline fun LABEL(body: () -> Unit) = EL("LABEL", body = body)
+    inline fun LABEL(classes: String, body: () -> Unit) = LABEL {
+        classes(classes)
+        body()
+    }
+
     inline fun SELECT(body: GossRendererCommonSelect.() -> Unit) = EL("SELECT") {
         GossRendererCommonSelect().body()
     }
@@ -140,7 +212,13 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     inline fun HTML(body: () -> Unit) = EL("HTML", body = body)
     inline fun HEAD(body: () -> Unit) = EL("HEAD", body = body)
     inline fun BODY(body: () -> Unit) = EL("BODY", body = body)
+
     inline fun BUTTON(body: () -> Unit) = EL("BUTTON", body = body)
+    inline fun BUTTON(classes: String, body: () -> Unit) = BUTTON {
+        classes(classes)
+        body()
+    }
+
     inline fun LINK(body: () -> Unit) = EL("LINK", noBody = true, body = body)
     fun LINK(rel: String, href: String) = EL("LINK", noBody = true) {
         rel(rel)
@@ -167,29 +245,29 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     inline fun INPUT(body: () -> Unit) = EL("INPUT", noBody = true, body = body)
 
-    fun SUBMIT(cls: String? = null, text: String? = null) = INPUT {
-        typeSubmit(cls)
+    fun SUBMIT(classes: String? = null, text: String? = null) = INPUT {
+        typeSubmit(classes)
         value(text)
     }
 
-    inline fun SUBMIT(cls: String? = null, text: String? = null, body: () -> Unit) = INPUT {
-        typeSubmit(cls)
+    inline fun SUBMIT(classes: String? = null, text: String? = null, body: () -> Unit) = INPUT {
+        typeSubmit(classes)
         value(text)
         body()
     }
 
-    fun SUBMIT(cls: String?, property: KProperty<String?>, text: String?) = INPUT {
-        typeSubmit(cls)
+    fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?) = INPUT {
+        typeSubmit(classes)
         nameValue(property, text)
     }
 
     fun CHECKBOX(
-        cls: String?,
+        classes: String?,
         property: KProperty0<Boolean?>,
         withId: Boolean = false,
         disabled: Boolean = false,
     ) = INPUT {
-        classes(cls)
+        classes(classes)
         type("checkbox")
         if(withId) id(property.name)
         name(property)
@@ -202,15 +280,15 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type: String,
         name: String? = null,
         value: String? = null,
-        clz: String? = null,
+        classes: String? = null,
         required: Boolean = false,
         checked: Boolean? = null,
         body: () -> Unit
     ) = EL("INPUT", noBody = true) {
         type(type)
         if(name != null) name(name)
-        if(value != null) value(value)
-        if(clz != null) classes(clz)
+        value(value)
+        classes(classes)
         required(required)
         checked?.let { checked(it) }
         body()
@@ -220,14 +298,14 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type: String,
         name: String? = null,
         value: String? = null,
-        clz: String? = null,
+        classes: String? = null,
         required: Boolean = false,
         checked: Boolean? = null
     ) = EL("INPUT", noBody = true) {
         type(type)
         if(name != null) name(name)
-        if(value != null) value(value)
-        if(clz != null) classes(clz)
+        value(value)
+        classes(classes)
         required(required)
         checked?.let { checked(it) }
     }
@@ -304,17 +382,17 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun HIDDEN_ENUM(property: KProperty0<Enum<*>?>) = HIDDEN(property.name, property.get())
     fun HIDDEN_DATE(property: KProperty0<LocalDate?>) = HIDDEN(property.name, property.get())
 
-    fun TEXTAREA(name: String, value: String? = null, required: Boolean = false, cls: String? = null, style: String? = null) =
+    fun TEXTAREA(name: String, value: String? = null, required: Boolean = false, classes: String? = null, style: String? = null) =
         EL("TEXTAREA") {
-            classes(cls)
+            classes(classes)
             name(name)
             if(required) required()
             style(style)
             +value
         }
 
-    fun TEXTAREA(property: KProperty0<String?>, required: Boolean = false, cls: String? = null, style: String? = null) =
-        TEXTAREA(name = property.name, value = property.get(), required = required, cls = cls, style = style)
+    fun TEXTAREA(property: KProperty0<String?>, required: Boolean = false, classes: String? = null, style: String? = null) =
+        TEXTAREA(name = property.name, value = property.get(), required = required, classes = classes, style = style)
 
     open fun csrf(): Pair<String, String>? = null
 
@@ -405,10 +483,11 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun colspan(value: Int?) = attr("colspan", value)
     fun rowspan(value: Int?) = attr("rowspan", value)
 
-    fun typeSubmit(cls: String?) {
+    fun typeSubmit(classes: String?) {
         type("submit")
-        classes(cls)
+        classes(classes)
     }
+
     fun typeNumber(name: String?, value: Double? = null) {
         type("text")
         name(name)
@@ -523,8 +602,8 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         value(value)
     }
 
-    fun nameValueUUID(property: KProperty0<UUID?>, cls: String = "text") {
-        classes(cls)
+    fun nameValueUUID(property: KProperty0<UUID?>, classes: String = "text") {
+        classes(classes)
         name(property)
         value(property.get())
     }
