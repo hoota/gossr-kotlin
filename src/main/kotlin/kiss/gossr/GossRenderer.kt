@@ -39,7 +39,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     /** general HTML element */
-    inline fun EL(tag: String, noBody: Boolean = false, body: () -> Unit) {
+    inline fun EL(tag: String, noBody: Boolean = false, newLineAfterTagClose: Boolean = true, body: () -> Unit) {
         closeTagOpening()
         context.tagOpening.append('<').append(tag)
 
@@ -50,11 +50,11 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             if(noBody && context.tagOpening.isNotEmpty()) {
                 context.tagOpening.append('/')
                 closeTagOpening()
-                context.out.append('\n')
             } else {
                 closeTagOpening()
-                context.out.append("</").append(tag).append(">\n")
+                context.out.append("</").append(tag).append(">")
             }
+            if(newLineAfterTagClose) context.out.append('\n')
         }
     }
 
@@ -256,9 +256,10 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         body()
     }
 
-    fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?) = INPUT {
+    fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?, @Language("js") onClick: String? = null) = INPUT {
         typeSubmit(classes)
         nameValue(property, text)
+        onClick(onClick)
     }
 
     fun CHECKBOX(
@@ -480,6 +481,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun height(value: Int?) = attr("height", value)
     fun href(value: String?) = attr("href", value)
     fun type(value: String?) = attr("type", value)
+    fun pattern(value: String?) = value?.let { attr("pattern", value) }
     fun colspan(value: Int?) = attr("colspan", value)
     fun rowspan(value: Int?) = attr("rowspan", value)
 
@@ -495,7 +497,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         value(value)
     }
 
-    fun typeMoney(name: String?, value: Double? = null) {
+    open fun typeMoney(name: String?, value: Double? = null) {
         type("number")
         step("0.01")
         name(name)
@@ -656,6 +658,8 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun onClick(@Language("js") value: String?) = value?.let { attr("onclick", value) }
     fun onChange(@Language("js") value: String?) = value?.let { attr("onchange", value) }
     fun onInput(@Language("js") value: String?) = value?.let { attr("oninput", value) }
+    fun onPaste(@Language("js") value: String?) = value?.let { attr("onpaste", value) }
+    fun onBlur(@Language("js") value: String?) = value?.let { attr("onblur", value) }
 
     fun required(v: Boolean? = true) {
         if(v == true) attr("required")
