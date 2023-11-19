@@ -277,6 +277,22 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         disabled(disabled)
     }
 
+    fun <T> CHECKBOX(
+        classes: String?,
+        property: KProperty0<Set<T>?>,
+        value: T,
+        withId: Boolean = false,
+        disabled: Boolean = false,
+    ) = INPUT {
+        classes(classes)
+        type("checkbox")
+        if(withId) id(property.name)
+        name(property)
+        value(value.toString())
+        checked(property.get()?.contains(value))
+        disabled(disabled)
+    }
+
     inline fun INPUT(
         type: String,
         name: String? = null,
