@@ -1,6 +1,7 @@
 package kiss.gossr
 
 import org.intellij.lang.annotations.Language
+import java.math.BigDecimal
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.time.LocalDate
@@ -286,9 +287,10 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     ) = INPUT {
         classes(classes)
         type("checkbox")
-        if(withId) id(property.name)
+        val v = (value as? Enum<*>)?.name ?: value.toString()
+        if(withId) id("${property.name}-$v")
         name(property)
-        value(value.toString())
+        value(v)
         checked(property.get()?.contains(value))
         disabled(disabled)
     }
@@ -537,6 +539,13 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type(inputType)
         name(property)
         value(property.get())
+    }
+
+    fun nameValueBigDecimal(property: KProperty0<BigDecimal?>, inputType: String = "text") {
+        attr("pattern", "^\\s*${NUMBER_PATTERN_SIMPLE}\\s*$")
+        type(inputType)
+        name(property)
+        value(property.get()?.stripTrailingZeros()?.toPlainString())
     }
 
     fun nameValueBool(property: KProperty0<Boolean?>, inputType: String = "text") {
