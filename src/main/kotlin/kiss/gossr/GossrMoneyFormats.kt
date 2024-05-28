@@ -25,6 +25,8 @@ abstract class GossrMoneyFormats : GossrMoneyFormatter {
     override fun formatMoney(n: Number?): String? = n?.let {
         if(isInteger(n)) {
             format.format(n)
+        } else if((n as? Double)?.isNaN() == true) {
+            null
         } else if((n.toDouble() * 100).roundToLong() % 100 == 0L) {
             // to avoid "-0.00" we have to compare with 0.01
             format.format(if(n.toDouble().absoluteValue >= ONE_CENT) n else 0.0)
@@ -36,6 +38,8 @@ abstract class GossrMoneyFormats : GossrMoneyFormatter {
     override fun formatMoney2(n: Number?): String? = n?.let {
         if(isInteger(n)) {
             "$n${separator}00"
+        } else if((n as? Double)?.isNaN() == true) {
+            null
         } else {
             // to avoid "-0.00" we have to compare with 0.01
             "%.02f".format(if(n.toDouble().absoluteValue >= ONE_CENT) n else 0.0)
@@ -46,6 +50,8 @@ abstract class GossrMoneyFormats : GossrMoneyFormatter {
     override fun formatDouble(n: Number?, digits: Int, trimZeros: Boolean): String? = n?.let {
         if(isInteger(n)) {
             n.toString()
+        } else if((n as? Double)?.isNaN() == true) {
+            null
         } else {
             val s = "%.${digits}f".format(n).replace('.', separator)
             if(!trimZeros) s else {

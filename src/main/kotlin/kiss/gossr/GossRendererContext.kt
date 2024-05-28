@@ -6,7 +6,7 @@ data class GossRendererContext(
     val moneyFormats: GossrMoneyFormatter,
     val throwOnAttributeNotInTag: Boolean = true
 ) {
-    val namePrefixes = ArrayList<String>()
+    var namePrefix: String? = null
     var tagOpening = StringBuilder()
     val tagClasses = ArrayList<String>()
 }

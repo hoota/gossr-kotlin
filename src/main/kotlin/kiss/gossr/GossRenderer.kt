@@ -2,6 +2,7 @@ package kiss.gossr
 
 import org.intellij.lang.annotations.Language
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.net.URLEncoder
 import java.nio.charset.Charset
 import java.time.LocalDate
@@ -379,7 +380,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         }
     }
 
-    fun HIDDEN(property: KProperty<Iterable<Long?>>, vararg values: Long?) {
+    fun HIDDEN(property: KProperty<Iterable<Long?>?>, vararg values: Long?) {
         values.forEach { value ->
             value?.let {
                 HIDDEN(property.name, it)
@@ -515,23 +516,28 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         value(value)
     }
 
-    open fun typeMoney(name: String?, value: Double? = null) {
+    open fun typeMoney(name: String?, value: Number? = null, required: Boolean = false) {
         type("number")
         step("0.01")
         name(name)
+        val value = (value as? BigDecimal)
+            ?: (value as? BigInteger)?.toBigDecimal()
+            ?: value?.toDouble()?.let { if(it.isNaN()) null else it }
         value(value?.let { "%.02f".format(it).replace(".00", "") })
+        required(required)
     }
 
-    fun nameValueMoney(property: KProperty<Double?>, value: Double? = null) =
-        typeMoney(property.name, value)
+    fun nameValueMoney(property: KProperty<Number?>, value: Double? = null) =
+        typeMoney(property.name, value, required = !property.returnType.isMarkedNullable)
 
-    fun nameValueMoney(property: KProperty0<Double?>) =
-        typeMoney(property.name, property.get())
+    fun nameValueMoney(property: KProperty0<Number?>) =
+        typeMoney(property.name, property.get(), required = !property.returnType.isMarkedNullable)
 
     fun nameValueLong(property: KProperty0<Long?>, inputType: String = "number") {
         type(inputType)
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueDouble(property: KProperty0<Double?>, inputType: String = "text") {
@@ -539,6 +545,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type(inputType)
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueBigDecimal(property: KProperty0<BigDecimal?>, inputType: String = "text") {
@@ -546,6 +553,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type(inputType)
         name(property)
         value(property.get()?.stripTrailingZeros()?.toPlainString())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueBool(property: KProperty0<Boolean?>, inputType: String = "text") {
@@ -558,6 +566,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type(inputType)
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueString(property: KProperty0<String?>, inputType: String = "text") {
@@ -570,6 +579,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         type(inputType)
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun typeInt(name: String?, value: Int? = null) {
@@ -593,52 +603,60 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     fun name(value: String?) = attr(
         "name",
-        context.namePrefixes.lastOrNull()?.let { it + value } ?: value
+        context.namePrefix?.let { it + value } ?: value
     )
 
     fun name(property: KProperty<*>) = name(property.name)
     fun name(e: Enum<*>) = name(e.name)
 
-    inline fun namePrefix(prefix: String, body: () -> Unit) {
-        context.namePrefixes.add(context.namePrefixes.lastOrNull()?.let { it + prefix } ?: prefix)
+    inline fun namePrefix(prefix: String, reset: Boolean = false, body: () -> Unit) {
+        val savedNamePrefix = context.namePrefix
+        if(reset) context.namePrefix = null
+        context.namePrefix = context.namePrefix?.let { it + prefix } ?: prefix
         try {
             body()
         }finally {
-            context.namePrefixes.removeLast()
+            context.namePrefix = savedNamePrefix
         }
     }
 
-    inline fun namePrefix(property: KProperty<*>, body: () -> Unit) =
-        namePrefix("${property.name}.", body)
+    inline fun namePrefix(property: KProperty<*>, reset: Boolean = false, body: () -> Unit) =
+        namePrefix("${property.name}.", reset, body)
 
-    inline fun namePrefix(property: KProperty0<Map<UUID, *>>, value: UUID, body: () -> Unit) =
-        namePrefix("${property.name}[$value].", body)
+    inline fun namePrefix(property: KProperty0<Map<UUID, *>?>, value: UUID, reset: Boolean = false, body: () -> Unit) =
+        namePrefix("${property.name}[$value].", reset, body)
 
     fun nameValue(property: KProperty<String?>, value: String?) {
         name(property)
         value(value)
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValue(property: KProperty0<String?>) {
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueUUID(property: KProperty<UUID?>, value: UUID?) {
+        type("text")
         name(property)
         value(value)
+        required(!property.returnType.isMarkedNullable)
     }
 
-    fun nameValueUUID(property: KProperty0<UUID?>, classes: String = "text") {
-        classes(classes)
+    fun nameValueUUID(property: KProperty0<UUID?>) {
+        type("text")
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValueDate(property: KProperty0<LocalDate?>, type: String = "date") {
         type(type)
         name(property)
         value(property.get())
+        required(!property.returnType.isMarkedNullable)
     }
 
     fun nameValue(property: KProperty<Iterable<UUID>>, vararg values: UUID?) {
