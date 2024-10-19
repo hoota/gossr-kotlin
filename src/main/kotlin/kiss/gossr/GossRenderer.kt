@@ -60,137 +60,194 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         }
     }
 
-    /** shorthand for DIV align=center */
-    inline fun CENTER(body: () -> Unit) = EL("CENTER", body = body)
+    inline fun CENTER(classes: String? = null, body: () -> Unit = {}) = EL("CENTER") {
+        classes(classes)
+        body()
+    }
 
-    inline fun DIV(body: () -> Unit) = EL("DIV", body = body)
-    inline fun DIV(classes: String, body: () -> Unit) = DIV {
+    inline fun DIV(classes: String? = null, body: () -> Unit = {}) = EL("DIV") {
         classes(classes)
         body()
     }
 
     /** small text style */
-    inline fun SMALL(body: () -> Unit) = EL("SMALL", body = body)
-    inline fun SMALL(classes: String, body: () -> Unit) = SMALL {
+    inline fun SMALL(classes: String? = null, body: () -> Unit = {}) = EL("SMALL") {
         classes(classes)
         body()
     }
 
     /** strike-through text */
-    inline fun STRIKE(body: () -> Unit) = EL("STRIKE", body = body)
-    inline fun STRIKE(classes: String, body: () -> Unit) = STRIKE {
+    inline fun STRIKE(classes: String? = null, body: () -> Unit = {}) = EL("STRIKE") {
         classes(classes)
         body()
     }
 
     /** strong emphasis */
-    inline fun STRONG(body: () -> Unit) = EL("STRONG", body = body)
-    inline fun STRONG(classes: String, body: () -> Unit) = STRONG {
+    inline fun STRONG(classes: String? = null, body: () -> Unit = {}) = EL("STRONG") {
         classes(classes)
         body()
     }
 
     /** subscript */
-    inline fun SUB(body: () -> Unit) = EL("SUB", body = body)
-    inline fun SUB(classes: String, body: () -> Unit) = SUB {
+    inline fun SUB(classes: String? = null, body: () -> Unit = {}) = EL("SUB") {
         classes(classes)
         body()
     }
 
     /** superscript */
-    inline fun SUP(body: () -> Unit) = EL("SUP", body = body)
-    inline fun SUP(classes: String, body: () -> Unit) = SUP {
+    inline fun SUP(classes: String? = null, body: () -> Unit = {}) = EL("SUP") {
         classes(classes)
         body()
     }
 
-    inline fun SPAN(body: () -> Unit) = EL("SPAN", body = body)
-    inline fun SPAN(classes: String, body: () -> Unit) = SPAN {
+    inline fun SPAN(classes: String? = null, body: () -> Unit = {}) = EL("SPAN") {
         classes(classes)
         body()
     }
 
-    inline fun LI(body: () -> Unit) = EL("LI", body = body)
-    inline fun LI(classes: String, body: () -> Unit) = LI {
+    inline fun LI(classes: String? = null, body: () -> Unit = {}) = EL("LI") {
         classes(classes)
         body()
     }
 
-    inline fun OL(body: () -> Unit) = EL("OL", body = body)
-    inline fun OL(classes: String, body: () -> Unit) = OL {
+    inline fun OL(classes: String? = null, body: () -> Unit = {}) = EL("OL") {
         classes(classes)
         body()
     }
 
-    inline fun TABLE(body: () -> Unit) = EL("TABLE", body = body)
-    inline fun TABLE(classes: String, body: () -> Unit) = TABLE {
+    inline fun TABLE(classes: String? = null, body: () -> Unit = {}) = EL("TABLE") {
         classes(classes)
         body()
     }
 
-    inline fun TBODY(body: () -> Unit) = EL("TBODY", body = body)
-    inline fun THEAD(body: () -> Unit) = EL("THEAD", body = body)
-    inline fun TFOOT(body: () -> Unit) = EL("TFOOT", body = body)
-
-    inline fun TH(body: () -> Unit) = EL("TH", body = body)
-    inline fun TR(body: () -> Unit) = EL("TR", body = body)
-    inline fun TD(body: () -> Unit) = EL("TD", body = body)
-
-    inline fun PRE(body: () -> Unit) = EL("PRE", body = body)
-    inline fun PRE(classes: String, body: () -> Unit) = PRE {
+    inline fun TBODY(classes: String? = null, body: () -> Unit = {}) = EL("TBODY") {
         classes(classes)
         body()
     }
 
-    inline fun TT(body: () -> Unit) = EL("TT", body = body)
-    inline fun TT(classes: String, body: () -> Unit) = TT {
+    inline fun THEAD(classes: String? = null, body: () -> Unit = {}) = EL("THEAD") {
+        classes(classes)
+        body()
+    }
+
+    inline fun TFOOT(classes: String? = null, body: () -> Unit = {}) = EL("TFOOT") {
+        classes(classes)
+        body()
+    }
+
+    inline fun TH(classes: String? = null, body: () -> Unit = {}) = EL("TH") {
+        classes(classes)
+        body()
+    }
+
+    inline fun TR(classes: String? = null, body: () -> Unit = {}) = EL("TR") {
+        classes(classes)
+        body()
+    }
+
+    inline fun TD(classes: String? = null, body: () -> Unit = {}) = EL("TD") {
+        classes(classes)
+        body()
+    }
+
+    inline fun PRE(classes: String? = null, body: () -> Unit = {}) = EL("PRE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun TT(classes: String? = null, body: () -> Unit = {}) = EL("TT") {
         classes(classes)
         body()
     }
 
     /** anchor */
-    inline fun A(body: () -> Unit) = EL("A", body = body)
-    inline fun B(body: () -> Unit) = EL("B", body = body)
-
-    inline fun P(body: () -> Unit) = EL("P", body = body)
-    inline fun P(classes: String, body: () -> Unit) = P {
+    inline fun A(classes: String? = null, body: () -> Unit = {}) = EL("A") {
         classes(classes)
         body()
     }
 
-    inline fun S(body: () -> Unit) = EL("S", body = body)
-    inline fun I(body: () -> Unit) = EL("I", body = body)
+    inline fun B(classes: String? = null, body: () -> Unit = {}) = EL("B") {
+        classes(classes)
+        body()
+    }
+
+    inline fun P(classes: String? = null, body: () -> Unit = {}) = EL("P") {
+        classes(classes)
+        body()
+    }
+
+    inline fun S(classes: String? = null, body: () -> Unit = {}) = EL("S") {
+        classes(classes)
+        body()
+    }
+
+    inline fun I(classes: String? = null, body: () -> Unit = {}) = EL("I") {
+        classes(classes)
+        body()
+    }
 
     /** underlined text style */
-    inline fun U(body: () -> Unit) = EL("U", body = body)
-
-    /** short inline quotation */
-    inline fun Q(body: () -> Unit) = EL("Q", body = body)
-
-    /** unordered list */
-    inline fun UL(body: () -> Unit) = EL("UL", body = body)
-    inline fun UL(classes: String, body: () -> Unit) = UL {
+    inline fun U(classes: String? = null, body: () -> Unit = {}) = EL("U") {
         classes(classes)
         body()
     }
 
-    inline fun H1(body: () -> Unit) = EL("H1", body = body)
-    inline fun H2(body: () -> Unit) = EL("H2", body = body)
-    inline fun H3(body: () -> Unit) = EL("H3", body = body)
-    inline fun H4(body: () -> Unit) = EL("H4", body = body)
-    inline fun H5(body: () -> Unit) = EL("H5", body = body)
-    inline fun H6(body: () -> Unit) = EL("H6", body = body)
-    inline fun NOBR(body: () -> Unit) = EL("NOBR", body = body)
+    /** short inline quotation */
+    inline fun Q(classes: String? = null, body: () -> Unit = {}) = EL("Q") {
+        classes(classes)
+        body()
+    }
+
+    /** unordered list */
+    inline fun UL(classes: String? = null, body: () -> Unit = {}) = EL("UL") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H1(classes: String? = null, body: () -> Unit = {}) = EL("H1") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H2(classes: String? = null, body: () -> Unit = {}) = EL("H2") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H3(classes: String? = null, body: () -> Unit = {}) = EL("H3") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H4(classes: String? = null, body: () -> Unit = {}) = EL("H4") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H5(classes: String? = null, body: () -> Unit = {}) = EL("H5") {
+        classes(classes)
+        body()
+    }
+
+    inline fun H6(classes: String? = null, body: () -> Unit = {}) = EL("H6") {
+        classes(classes)
+        body()
+    }
+
+    inline fun NOBR(classes: String? = null, body: () -> Unit = {}) = EL("NOBR") {
+        classes(classes)
+        body()
+    }
 
     fun BR() = EL("BR", noBody = true) {}
 
-    inline fun LABEL(body: () -> Unit) = EL("LABEL", body = body)
-    inline fun LABEL(classes: String, body: () -> Unit) = LABEL {
+    inline fun LABEL(classes: String? = null, body: () -> Unit = {}) = EL("LABEL") {
         classes(classes)
         body()
     }
 
-    inline fun SELECT(body: GossRendererCommonSelect.() -> Unit) = EL("SELECT") {
+    inline fun SELECT(classes: String? = null, body: GossRendererCommonSelect.() -> Unit) = EL("SELECT") {
+        classes(classes)
         GossRendererCommonSelect().body()
     }
 
@@ -210,13 +267,16 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         +empty
     }
 
-    inline fun TEXTAREA(body: () -> Unit) = EL("TEXTAREA", body = body)
+    inline fun TEXTAREA(classes: String? = null, body: () -> Unit = {}) = EL("TEXTAREA") {
+        classes(classes)
+        body()
+    }
+
     inline fun HTML(body: () -> Unit) = EL("HTML", body = body)
     inline fun HEAD(body: () -> Unit) = EL("HEAD", body = body)
     inline fun BODY(body: () -> Unit) = EL("BODY", body = body)
 
-    inline fun BUTTON(body: () -> Unit) = EL("BUTTON", body = body)
-    inline fun BUTTON(classes: String, body: () -> Unit) = BUTTON {
+    inline fun BUTTON(classes: String? = null, body: () -> Unit = {}) = EL("BUTTON") {
         classes(classes)
         body()
     }
@@ -258,10 +318,18 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         body()
     }
 
-    fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?, @Language("js") onClick: String? = null) = INPUT {
+    inline fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?, body: () -> Unit = {}) = INPUT {
         typeSubmit(classes)
         nameValue(property, text)
-        onClick(onClick)
+        body()
+    }
+
+    inline fun CHECKBOX(property: KProperty0<Boolean?>, body: () -> Unit) = INPUT {
+        type("checkbox")
+        name(property)
+        value("true")
+        checked(property.get())
+        body()
     }
 
     fun CHECKBOX(
@@ -269,31 +337,31 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         property: KProperty0<Boolean?>,
         withId: Boolean = false,
         disabled: Boolean = false,
-    ) = INPUT {
+    ) = CHECKBOX(property) {
         classes(classes)
-        type("checkbox")
         if(withId) id(property.name)
-        name(property)
-        value("true")
-        checked(property.get())
         disabled(disabled)
     }
 
     fun <T> CHECKBOX(
         classes: String?,
-        property: KProperty0<Set<T>?>,
+        property: KProperty0<Iterable<T>?>,
         value: T,
         withId: Boolean = false,
         disabled: Boolean = false,
-    ) = INPUT {
-        classes(classes)
-        type("checkbox")
+    ): String? {
         val v = (value as? Enum<*>)?.name ?: value.toString()
-        if(withId) id("${property.name}-$v")
-        name(property)
-        value(v)
-        checked(property.get()?.contains(value))
-        disabled(disabled)
+        val id = if(withId) "${property.name}-$v" else null
+        INPUT {
+            classes(classes)
+            type("checkbox")
+            id(id)
+            name(property)
+            value(v)
+            checked(property.get()?.contains(value))
+            disabled(disabled)
+        }
+        return id
     }
 
     inline fun INPUT(
@@ -372,18 +440,17 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         value(value)
     }
 
-    fun HIDDEN(property: KProperty<Iterable<UUID?>>, vararg values: UUID?) {
-        values.forEach { value ->
-            value?.let {
-                HIDDEN(property.name, it)
-            }
+    fun <V> HIDDEN_ITERABLE(property: KProperty0<Iterable<V?>?>, transform: ((V) -> CharSequence)? = null) {
+        property.get()?.mapNotNull { it }.nullIfEmpty()?.let { values ->
+            HIDDEN(property.name, values.joinToString(",", transform = transform))
         }
     }
 
-    fun HIDDEN(property: KProperty<Iterable<Long?>?>, vararg values: Long?) {
-        values.forEach { value ->
-            value?.let {
-                HIDDEN(property.name, it)
+    fun <K, V> HIDDEN_MAP_OF_ITERABLE(property: KProperty0<Map<K, Iterable<V?>>?>, transform: ((V) -> CharSequence)? = null) {
+        val name = property.name
+        property.get()?.forEach { (k, list) ->
+            list.mapNotNull { it }.joinToString(",", transform = transform).nullIfEmpty()?.let {
+                HIDDEN("$name[$k]", it)
             }
         }
     }
@@ -411,8 +478,13 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             +value
         }
 
-    fun TEXTAREA(property: KProperty0<String?>, required: Boolean = false, classes: String? = null, style: String? = null) =
-        TEXTAREA(name = property.name, value = property.get(), required = required, classes = classes, style = style)
+    fun TEXTAREA(property: KProperty0<String?>, body: () -> Unit = {}) =
+        EL("TEXTAREA") {
+            name(property.name)
+            required(!property.returnType.isMarkedNullable)
+            body()
+            +property.get()
+        }
 
     open fun csrf(): Pair<String, String>? = null
 
@@ -603,28 +675,38 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     fun name(value: String?) = attr(
         "name",
-        context.namePrefix?.let { it + value } ?: value
+        if(context.nameAsMapKey) {
+            context.namePrefix?.let { "$it[$value]" } ?: "[$value]"
+        } else {
+            context.namePrefix?.let { it + value } ?: value
+        }
     )
 
     fun name(property: KProperty<*>) = name(property.name)
     fun name(e: Enum<*>) = name(e.name)
 
-    inline fun namePrefix(prefix: String, reset: Boolean = false, body: () -> Unit) {
+    inline fun namePrefix(prefix: String, reset: Boolean = false, mapKeys: Boolean = false, body: () -> Unit) {
         val savedNamePrefix = context.namePrefix
+        val savedNameAsMapKey = context.nameAsMapKey
+
         if(reset) context.namePrefix = null
+
         context.namePrefix = context.namePrefix?.let { it + prefix } ?: prefix
+        context.nameAsMapKey = mapKeys
+
         try {
             body()
-        }finally {
+        } finally {
             context.namePrefix = savedNamePrefix
+            context.nameAsMapKey = savedNameAsMapKey
         }
     }
 
     inline fun namePrefix(property: KProperty<*>, reset: Boolean = false, body: () -> Unit) =
-        namePrefix("${property.name}.", reset, body)
+        namePrefix("${property.name}.", reset, body = body)
 
-    inline fun namePrefix(property: KProperty0<Map<UUID, *>?>, value: UUID, reset: Boolean = false, body: () -> Unit) =
-        namePrefix("${property.name}[$value].", reset, body)
+    inline fun <T> namePrefix(property: KProperty0<Map<T, *>?>, value: T, reset: Boolean = false, body: () -> Unit) =
+        namePrefix("${property.name}[$value].", reset, body = body)
 
     fun nameValue(property: KProperty<String?>, value: String?) {
         name(property)
@@ -819,6 +901,18 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             }finally {
                 threadLocalContext.set(null)
             }
+        }
+
+        private fun <T: Collection<*>> T?.nullIfEmpty(): T? {
+            return if(isNullOrEmpty()) null else this
+        }
+
+        private fun String?.nullIfEmpty(): String? {
+            return if(isNullOrEmpty()) null else this
+        }
+
+        private fun <T: Map<*, *>> T?.nullIfEmpty(): T? {
+            return if(isNullOrEmpty()) null else this
         }
     }
 }

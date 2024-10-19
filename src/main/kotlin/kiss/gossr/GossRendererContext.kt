@@ -7,6 +7,7 @@ data class GossRendererContext(
     val throwOnAttributeNotInTag: Boolean = true
 ) {
     var namePrefix: String? = null
+    var nameAsMapKey: Boolean = false
     var tagOpening = StringBuilder()
     val tagClasses = ArrayList<String>()
 }
