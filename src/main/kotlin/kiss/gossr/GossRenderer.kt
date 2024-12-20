@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
+import kotlin.reflect.full.isSubclassOf
 
 @Suppress("FunctionNaming", "TooManyFunctions", "MethodOverloading")
 abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
@@ -685,6 +686,9 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun name(property: KProperty<*>) = name(property.name)
     fun name(e: Enum<*>) = name(e.name)
 
+    fun <T> name(property: KProperty0<Map<T, *>?>, value: T) =
+        name("${property.name}[$value]")
+
     inline fun namePrefix(prefix: String, reset: Boolean = false, mapKeys: Boolean = false, body: () -> Unit) {
         val savedNamePrefix = context.namePrefix
         val savedNameAsMapKey = context.nameAsMapKey
@@ -705,8 +709,15 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     inline fun namePrefix(property: KProperty<*>, reset: Boolean = false, body: () -> Unit) =
         namePrefix("${property.name}.", reset, body = body)
 
-    inline fun <T> namePrefix(property: KProperty0<Map<T, *>?>, value: T, reset: Boolean = false, body: () -> Unit) =
-        namePrefix("${property.name}[$value].", reset, body = body)
+    inline fun namePrefix(property: KProperty0<Map<*, *>?>, reset: Boolean = false, body: () -> Unit) =
+        namePrefix(property.name, reset, mapKeys = true, body = body)
+
+    inline fun <K, reified V> namePrefix(property: KProperty0<Map<K, V>?>, value: K, reset: Boolean = false, body: () -> Unit) =
+        if(V::class.isSubclassOf(Map::class)) {
+            namePrefix("${property.name}[$value]", reset, mapKeys = true, body = body)
+        } else {
+            namePrefix("${property.name}[$value].", reset, body = body)
+        }
 
     fun nameValue(property: KProperty<String?>, value: String?) {
         name(property)
@@ -735,6 +746,13 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     fun nameValueDate(property: KProperty0<LocalDate?>, type: String = "date") {
+        type(type)
+        name(property)
+        value(property.get())
+        required(!property.returnType.isMarkedNullable)
+    }
+
+    fun nameValueDatetimeLocal(property: KProperty0<LocalDateTime?>, type: String = "datetime-local") {
         type(type)
         name(property)
         value(property.get())
@@ -814,6 +832,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun data(name: String, value: Boolean?) = attr("data-$name", value)
     fun data(name: String, value: Int?) = attr("data-$name", value)
     fun data(name: String, value: Long?) = attr("data-$name", value)
+    fun data(name: String, value: UUID?) = attr("data-$name", value)
     fun data(name: String, value: Enum<*>?) = attr("data-$name", value)
 
     override fun formatDateTime(t: LocalDateTime?): String? =
