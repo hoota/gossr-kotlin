@@ -42,7 +42,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     /** general HTML element */
-    inline fun EL(tag: String, noBody: Boolean = false, newLineAfterTagClose: Boolean = true, body: () -> Unit) {
+    inline fun EL(tag: String, noBody: Boolean = false, body: () -> Unit) {
         closeTagOpening()
         context.tagOpening.append('<').append(tag)
 
@@ -57,7 +57,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
                 closeTagOpening()
                 context.out.append("</").append(tag).append(">")
             }
-            if(newLineAfterTagClose) context.out.append('\n')
+            if(context.newLineAfterTagClose) context.out.append('\n')
         }
     }
 
@@ -205,6 +205,11 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         body()
     }
 
+    inline fun NAV(classes: String? = null, body: () -> Unit = {}) = EL("NAV") {
+        classes(classes)
+        body()
+    }
+
     inline fun H1(classes: String? = null, body: () -> Unit = {}) = EL("H1") {
         classes(classes)
         body()
@@ -241,6 +246,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     fun BR() = EL("BR", noBody = true) {}
+    fun HR() = EL("HR", noBody = true) {}
 
     inline fun LABEL(classes: String? = null, body: () -> Unit = {}) = EL("LABEL") {
         classes(classes)
@@ -257,7 +263,10 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         GossRendererTypedSelect(property.get()).body()
     }
 
-    inline fun <E, C : Collection<E>> MULTISELECT(property: KProperty0<C?>, body: GossRendererTypedMultiSelect<E>.() -> Unit) = EL("SELECT") {
+    inline fun <E, C : Collection<E>> MULTISELECT(
+        property: KProperty0<C?>,
+        body: GossRendererTypedMultiSelect<E>.() -> Unit
+    ) = EL("SELECT") {
         name(property)
         multiple(true)
         GossRendererTypedMultiSelect(property.get()).body()
@@ -306,14 +315,12 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         context.out.append(html)
     }
 
-    inline fun INPUT(body: () -> Unit) = EL("INPUT", noBody = true, body = body)
-
-    fun SUBMIT(classes: String? = null, text: String? = null) = INPUT {
-        typeSubmit(classes)
-        value(text)
+    inline fun INPUT(classes: String? = null, body: () -> Unit) = EL("INPUT", noBody = true) {
+        classes(classes)
+        body()
     }
 
-    inline fun SUBMIT(classes: String? = null, text: String? = null, body: () -> Unit) = INPUT {
+    inline fun SUBMIT(classes: String? = null, text: String? = null, body: () -> Unit = {}) = INPUT {
         typeSubmit(classes)
         value(text)
         body()
@@ -321,124 +328,54 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     inline fun SUBMIT(classes: String?, property: KProperty<String?>, text: String?, body: () -> Unit = {}) = INPUT {
         typeSubmit(classes)
-        nameValue(property, text)
+        name(property)
+        value(text)
         body()
     }
 
-    inline fun CHECKBOX(property: KProperty0<Boolean?>, body: () -> Unit) = INPUT {
+    inline fun CHECKBOX(
+        property: KProperty0<Boolean?>,
+        withId: Boolean = false,
+        body: () -> Unit = {}
+    ): String = INPUT {
         type("checkbox")
         name(property)
+        if(withId) id(property.name)
         value("true")
         checked(property.get())
         body()
-    }
-
-    fun CHECKBOX(
-        classes: String?,
-        property: KProperty0<Boolean?>,
-        withId: Boolean = false,
-        disabled: Boolean = false,
-    ) = CHECKBOX(property) {
-        classes(classes)
-        if(withId) id(property.name)
-        disabled(disabled)
+    }.let {
+        property.name
     }
 
     fun <T> CHECKBOX(
-        classes: String?,
         property: KProperty0<Iterable<T>?>,
         value: T,
         withId: Boolean = false,
-        disabled: Boolean = false,
+        body: () -> Unit = {}
     ): String? {
-        val v = (value as? Enum<*>)?.name ?: value.toString()
-        val id = if(withId) "${property.name}-$v" else null
+        val id = if(withId) "checkbox-${UUID.randomUUID()}" else null
         INPUT {
-            classes(classes)
             type("checkbox")
-            id(id)
+            if(withId) id(id)
             name(property)
-            value(v)
+            value(value)
             checked(property.get()?.contains(value))
-            disabled(disabled)
+            body()
         }
         return id
     }
 
-    inline fun INPUT(
-        type: String,
-        name: String? = null,
-        value: String? = null,
-        classes: String? = null,
-        required: Boolean = false,
-        checked: Boolean? = null,
-        body: () -> Unit
-    ) = EL("INPUT", noBody = true) {
-        type(type)
-        if(name != null) name(name)
-        value(value)
-        classes(classes)
-        required(required)
-        checked?.let { checked(it) }
-        body()
-    }
-
-    fun INPUT(
-        type: String,
-        name: String? = null,
-        value: String? = null,
-        classes: String? = null,
-        required: Boolean = false,
-        checked: Boolean? = null
-    ) = EL("INPUT", noBody = true) {
-        type(type)
-        if(name != null) name(name)
-        value(value)
-        classes(classes)
-        required(required)
-        checked?.let { checked(it) }
-    }
-
-    fun HIDDEN(name: String, value: Int?) = INPUT {
+    fun HIDDEN(name: String, value: Any?) = INPUT {
         type("hidden")
         name(name)
         value(value)
     }
 
-    fun HIDDEN(name: String, value: Long?) = INPUT {
-        type("hidden")
-        name(name)
-        value(value)
-    }
-
-    fun HIDDEN(name: String, value: String?) = INPUT {
-        type("hidden")
-        name(name)
-        value(value)
-    }
-
-    fun HIDDEN(name: String, value: UUID?) = INPUT {
-        type("hidden")
-        name(name)
-        value(value)
-    }
-
-    fun HIDDEN(name: String, value: Enum<*>?) = INPUT {
-        type("hidden")
-        name(name)
-        value(value)
-    }
-
-    fun HIDDEN(name: String, value: LocalDate?) = INPUT {
-        type("hidden")
-        name(name)
-        value(formatDateISO(value))
-    }
-
-    fun HIDDEN(property: KProperty<UUID>, value: UUID?) = INPUT {
+    fun HIDDEN(property: KProperty0<*>) = INPUT {
         type("hidden")
         name(property)
-        value(value)
+        value(property.get())
     }
 
     fun <V> HIDDEN_ITERABLE(property: KProperty0<Iterable<V?>?>, transform: ((V) -> CharSequence)? = null) {
@@ -447,35 +384,10 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         }
     }
 
-    fun <K, V> HIDDEN_MAP_OF_ITERABLE(property: KProperty0<Map<K, Iterable<V?>>?>, transform: ((V) -> CharSequence)? = null) {
-        val name = property.name
-        property.get()?.forEach { (k, list) ->
-            list.mapNotNull { it }.joinToString(",", transform = transform).nullIfEmpty()?.let {
-                HIDDEN("$name[$k]", it)
-            }
-        }
-    }
-
-    fun HIDDEN(property: KProperty<String?>, value: String?) = INPUT {
-        type("hidden")
-        name(property)
-        value(value)
-    }
-
-    fun HIDDEN_BOOLEAN(property: KProperty0<Boolean?>) = HIDDEN(property.name, property.get()?.toString())
-    fun HIDDEN_INT(property: KProperty0<Int?>) = HIDDEN(property.name, property.get())
-    fun HIDDEN_LONG(property: KProperty0<Long?>) = HIDDEN(property.name, property.get())
-    fun HIDDEN_UUID(property: KProperty0<UUID?>) = HIDDEN(property.name, property.get())
-    fun HIDDEN_STRING(property: KProperty0<String?>) = HIDDEN(property.name, property.get())
-    fun HIDDEN_ENUM(property: KProperty0<Enum<*>?>) = HIDDEN(property.name, property.get())
-    fun HIDDEN_DATE(property: KProperty0<LocalDate?>) = HIDDEN(property.name, property.get())
-
-    fun TEXTAREA(name: String, value: String? = null, required: Boolean = false, classes: String? = null, style: String? = null) =
+    fun TEXTAREA(classes: String? = null, value: String? = null, body: () -> Unit = {}) =
         EL("TEXTAREA") {
             classes(classes)
-            name(name)
-            if(required) required()
-            style(style)
+            body()
             +value
         }
 
@@ -486,8 +398,6 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             body()
             +property.get()
         }
-
-    open fun csrf(): Pair<String, String>? = null
 
     inline fun FORM(action: String? = null, method: String? = null, body: () -> Unit) = EL("FORM") {
         action(action)
@@ -502,17 +412,11 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         }
     }
 
-    inline fun IMG(src: String, width: Int? = null, height: Int? = null, body: () -> Unit) = EL("IMG", noBody = true) {
+    inline fun IMG(src: String, width: Int? = null, height: Int? = null, body: () -> Unit = {}) = EL("IMG", noBody = true) {
         src(src)
         if(width != null) width(width)
         if(height != null) height(height)
         body()
-    }
-
-    fun IMG(src: String, width: Int? = null, height: Int? = null) = EL("IMG", noBody = true) {
-        src(src)
-        if(width != null) width(width)
-        if(height != null) height(height)
     }
 
     inline fun SVG(body: () -> Unit) = EL("SVG") {
@@ -540,7 +444,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     operator fun LocalDate?.unaryPlus() = t(formatDate(this))
     operator fun Enum<*>?.unaryPlus() = t(this)
 
-    fun attr(name: String, value: String?) {
+    fun attr(name: String, value: CharSequence?) {
         if(context.tagOpening.isNotEmpty()) {
             context.tagOpening.append(' ').append(name).append('=').append('"')
             if(value != null) htmlEncode(value, context.tagOpening)
@@ -655,25 +559,6 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         required(!property.returnType.isMarkedNullable)
     }
 
-    fun typeInt(name: String?, value: Int? = null) {
-        type("number")
-        name(name)
-        value(value)
-    }
-
-    fun typeLong(name: String?, value: Long? = null) {
-        type("number")
-        name(name)
-        value(value)
-    }
-
-    fun typeDate(name: String?, value: LocalDate? = null, required: Boolean = false) {
-        type("date")
-        name(name)
-        required(required)
-        value(value)
-    }
-
     fun name(value: String?) = attr(
         "name",
         if(context.nameAsMapKey) {
@@ -719,23 +604,14 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             namePrefix("${property.name}[$value].", reset, body = body)
         }
 
-    fun nameValue(property: KProperty<String?>, value: String?) {
-        name(property)
-        value(value)
-        required(!property.returnType.isMarkedNullable)
-    }
-
-    fun nameValue(property: KProperty0<String?>) {
-        name(property)
-        value(property.get())
-        required(!property.returnType.isMarkedNullable)
-    }
-
-    fun nameValueUUID(property: KProperty<UUID?>, value: UUID?) {
-        type("text")
-        name(property)
-        value(value)
-        required(!property.returnType.isMarkedNullable)
+    inline fun newLineAfterTagClose(v: Boolean, body: () -> Unit) {
+        val oldV = context.newLineAfterTagClose
+        try {
+            context.newLineAfterTagClose = v
+            body()
+        }finally {
+            context.newLineAfterTagClose = oldV
+        }
     }
 
     fun nameValueUUID(property: KProperty0<UUID?>) {
@@ -759,32 +635,30 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         required(!property.returnType.isMarkedNullable)
     }
 
-    fun nameValue(property: KProperty<Iterable<UUID>>, vararg values: UUID?) {
-        values.firstOrNull()?.let { value ->
-            name(property)
-            value(value)
-        }
-    }
-
     fun method(value: String?) = value?.let { attr("method", value) }
-    fun value(value: String?) = value?.let { attr("value", value) }
-    fun value(value: Boolean?) = value?.let { attr("value", it.toString()) }
-    fun value(value: Int?) = value?.let { attr("value", value) }
-    fun value(value: Long?) = value?.let { attr("value", value) }
     fun enctype(value: String?) = value?.let { attr("enctype", value) }
     fun target(value: String?) = value?.let { attr("target", value) }
+
+    fun value(value: CharSequence?) = value?.let { attr("value", value) }
     fun value(value: Double?) = value?.let {
         attr("value", formatDouble(value, 20, true))
     }
 
-    fun value(value: UUID?) = value?.let { attr("value", value) }
     fun value(value: LocalDate?) = value?.let { attr("value", formatDateISO(value)) }
     fun value(value: LocalDateTime?) = value?.let { attr("value", formatDateTimeISO(value)) }
     fun value(value: Enum<*>?) = value?.let { attr("value", value) }
+
+    open fun value(v: Any?) = when(v) {
+        null -> run {}
+        is Enum<*> -> value(v)
+        is Double -> value(v)
+        is LocalDate -> value(v)
+        is LocalDateTime -> value(v)
+        else -> value(v.toString())
+    }
+
     fun style(@Language("css") value: String?) = attr("style", value)
-    fun min(value: LocalDate?) = value?.let { attr("min", formatDateISO(value)) }
     fun min(value: String?) = value?.let { attr("min", value) }
-    fun max(value: LocalDate?) = value?.let { attr("max", formatDateISO(value)) }
     fun max(value: String?) = value?.let { attr("max", value) }
     fun step(value: String?) = value?.let { attr("step", value) }
     fun placeholder(value: String?) = value?.let { attr("placeholder", value) }
@@ -828,12 +702,14 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         if(v == true) attr("disabled")
     }
 
-    fun data(name: String, value: String?) = attr("data-$name", value)
-    fun data(name: String, value: Boolean?) = attr("data-$name", value)
-    fun data(name: String, value: Int?) = attr("data-$name", value)
-    fun data(name: String, value: Long?) = attr("data-$name", value)
-    fun data(name: String, value: UUID?) = attr("data-$name", value)
-    fun data(name: String, value: Enum<*>?) = attr("data-$name", value)
+    open fun data(name: String, v: Any?) = when(v) {
+        null -> run {}
+        is Enum<*> -> attr("data-$name", v)
+        is Double -> attr("data-$name", formatDouble(v, 20, trimZeros = true))
+        is LocalDate -> attr("data-$name", formatDateISO(v))
+        is LocalDateTime -> attr("data-$name", formatDateTimeISO(v))
+        else -> attr("data-$name", v.toString())
+    }
 
     override fun formatDateTime(t: LocalDateTime?): String? =
         context.dateTimeFormats.formatDateTime(t)
@@ -860,6 +736,8 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     override fun formatDouble(n: Number?, digits: Int, trimZeros: Boolean): String? =
         context.moneyFormats.formatDouble(n, digits, trimZeros)
 
+    open fun csrf(): Pair<String, String>? = null
+
     companion object {
         private val threadLocalContext = ThreadLocal<GossRendererContext?>()
 
@@ -881,7 +759,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
         fun urlEncode(s: String): String = URLEncoder.encode(s, Charset.defaultCharset())
 
-        fun htmlEncode(t: String, out: Appendable) {
+        fun htmlEncode(t: CharSequence, out: Appendable) {
             var i = 0
             val l = t.length
             while(i < l) {
@@ -906,6 +784,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
             dateTimeFormats: GossrDateTimeFormatter = DateTimeFormatEurope,
             moneyFormats: GossrMoneyFormatter = DotCommaMoneyFormat,
             throwOnAttributeNotInTag: Boolean = true,
+            newLineAfterTagClose: Boolean = true,
             renderFunction: () -> Unit
         ) {
             try {
@@ -913,7 +792,8 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
                     out = out,
                     dateTimeFormats = dateTimeFormats,
                     moneyFormats = moneyFormats,
-                    throwOnAttributeNotInTag = throwOnAttributeNotInTag
+                    throwOnAttributeNotInTag = throwOnAttributeNotInTag,
+                    newLineAfterTagClose = newLineAfterTagClose
                 ))
 
                 renderFunction()
