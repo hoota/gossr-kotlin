@@ -333,6 +333,18 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         body()
     }
 
+    inline fun <T> RADIO(
+        property: KProperty0<T?>,
+        value: T,
+        body: () -> Unit = {}
+    ) = INPUT {
+        type("radio")
+        name(property)
+        value(value)
+        checked(property.get() == value)
+        body()
+    }
+
     inline fun CHECKBOX(
         property: KProperty0<Boolean?>,
         withId: Boolean = false,
