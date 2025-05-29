@@ -23,7 +23,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         }
         ?: throw GossRendererException("GossRendererContext.threadLocal is empty")
 
-    fun closeTagOpening() {
+    fun closeTagOpening(ket: String = ">") {
         val context = context
         if(context.tagOpening.isNotEmpty()) {
             context.out.append(context.tagOpening)
@@ -36,7 +36,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
                 context.out.append('"')
             }
             context.tagClasses.clear()
-            context.out.append('>')
+            context.out.append(ket)
             context.tagOpening.clear()
         }
     }
@@ -51,8 +51,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         } finally {
 
             if(noBody && context.tagOpening.isNotEmpty()) {
-                context.tagOpening.append('/')
-                closeTagOpening()
+                closeTagOpening("/>")
             } else {
                 closeTagOpening()
                 context.out.append("</").append(tag).append(">")
@@ -311,8 +310,10 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     fun noEscape(@Language("html") html: String?) {
-        closeTagOpening()
-        context.out.append(html)
+        html?.let {
+            closeTagOpening()
+            context.out.append(html)
+        }
     }
 
     inline fun INPUT(classes: String? = null, body: () -> Unit) = EL("INPUT", noBody = true) {

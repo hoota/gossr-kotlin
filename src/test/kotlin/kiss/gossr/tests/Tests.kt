@@ -14,6 +14,28 @@ import kotlin.test.assertEquals
 
 class Tests {
     @Test
+    fun imageTest() {
+        val out = StringBuilder()
+        val renderer = object : GossRenderer() {}
+        GossRenderer.use(out) {
+            renderer.apply {
+                IMG("url.jpg", width = 150) {
+                    classes("imageClass")
+                }
+                BR()
+                DIV("divclass") {}
+            }
+        }
+
+        assertEquals(
+            """<IMG src="url.jpg" width="150" class="imageClass"/>
+<BR/>
+<DIV class="divclass"></DIV>""",
+            out.toString().trim()
+        )
+    }
+
+    @Test
     fun basicTest() {
         val now = LocalDate.now()
         val out = StringBuilder()
