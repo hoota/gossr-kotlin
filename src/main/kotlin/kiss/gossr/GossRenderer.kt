@@ -337,13 +337,19 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     inline fun <T> RADIO(
         property: KProperty0<T?>,
         value: T,
+        withId: Boolean = false,
         body: () -> Unit = {}
-    ) = INPUT {
-        type("radio")
-        name(property)
-        value(value)
-        checked(property.get() == value)
-        body()
+    ): String? {
+        val id = if(withId) "checkbox-${UUID.randomUUID()}" else null
+        INPUT {
+            type("radio")
+            name(property)
+            value(value)
+            checked(property.get() == value)
+            id(id)
+            body()
+        }
+        return id
     }
 
     inline fun CHECKBOX(
