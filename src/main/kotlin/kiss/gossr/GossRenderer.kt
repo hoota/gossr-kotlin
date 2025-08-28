@@ -676,7 +676,7 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         else -> value(v.toString())
     }
 
-    fun style(@Language("css") value: String?) = attr("style", value)
+    fun style(@Language("css", prefix = "{", suffix = "}") value: String?) = attr("style", value)
     fun min(value: String?) = value?.let { attr("min", value) }
     fun max(value: String?) = value?.let { attr("max", value) }
     fun step(value: String?) = value?.let { attr("step", value) }
