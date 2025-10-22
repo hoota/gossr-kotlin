@@ -296,8 +296,20 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         href(href)
     }
 
-    fun SCRIPT(src: String) = EL("SCRIPT") {
+    fun SCRIPT(
+        src: String,
+        integrity: String? = null,
+        crossorigin: String? = null,
+        async: Boolean = false,
+        defer: Boolean = false,
+        moreAttrs: Map<String, String>? = null,
+    ) = EL("SCRIPT") {
         src(src)
+        integrity?.let { attr("integrity", integrity) }
+        crossorigin?.let { attr("crossorigin", crossorigin) }
+        if(async) attr("async")
+        if(defer) attr("defer")
+        moreAttrs?.forEach { (k, v) -> attr(k, v) }
     }
 
     fun SCRIPT(@Language("js") code: String, type: String? = null) = EL("SCRIPT") {
