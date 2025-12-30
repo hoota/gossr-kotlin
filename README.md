@@ -154,6 +154,13 @@ GOSSR treats UI rendering as a normal, testable, refactorable Kotlin computation
 
 ---
 
+### Why Kotlin for UI rendering?
+
+Using Kotlin as the language for UI rendering means the full power of the language is available when building pages.
+
+You can use constants, collection iteration, ordinary functions that render reusable page fragments, and shared code exactly the same way you reuse business logic. UI blocks can be extracted into functions or base classes, extended or overridden through inheritance, and composed without introducing a separate template language. Control flow is expressed using normal `if / else`, `when`, `try / catch`, and loops — not limited or ad-hoc DSL constructs. As a result, UI code remains readable, testable, and refactor-friendly even as it grows in complexity.
+
+
 ## Why not Thymeleaf / JSX / classic templates?
 
 GOSSR Core does not exist because existing solutions are *bad*.  
