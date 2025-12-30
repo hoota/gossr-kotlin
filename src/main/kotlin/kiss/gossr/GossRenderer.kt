@@ -592,10 +592,16 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     fun name(value: String?) = attr(
         "name",
-        if(context.nameAsMapKey) {
-            context.namePrefix?.let { "$it[$value]" } ?: "[$value]"
-        } else {
-            context.namePrefix?.let { it + value } ?: value
+        value?.let {
+            if(context.nameAsMapKey) {
+                context.namePrefix?.let { "$it[$value]" } ?: "[$value]"
+            } else {
+                context.namePrefix?.let { it + value } ?: value
+            }.also {
+                if(context.formFieldNamesCollectionEnabled) {
+                    context.formFieldNames.add(it)
+                }
+            }
         }
     )
 
