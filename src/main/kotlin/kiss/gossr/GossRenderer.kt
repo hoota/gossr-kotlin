@@ -1,6 +1,7 @@
 package kiss.gossr
 
 import org.intellij.lang.annotations.Language
+import org.intellij.lang.annotations.MagicConstant
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.net.URLEncoder
@@ -240,6 +241,96 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     }
 
     inline fun NOBR(classes: String? = null, body: () -> Unit = {}) = EL("NOBR") {
+        classes(classes)
+        body()
+    }
+
+    inline fun SECTION(classes: String? = null, body: () -> Unit = {}) = EL("SECTION") {
+        classes(classes)
+        body()
+    }
+
+    inline fun ARTICLE(classes: String? = null, body: () -> Unit = {}) = EL("ARTICLE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun ASIDE(classes: String? = null, body: () -> Unit = {}) = EL("ASIDE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun HEADER(classes: String? = null, body: () -> Unit = {}) = EL("HEADER") {
+        classes(classes)
+        body()
+    }
+
+    inline fun FOOTER(classes: String? = null, body: () -> Unit = {}) = EL("FOOTER") {
+        classes(classes)
+        body()
+    }
+
+    inline fun MAIN(classes: String? = null, body: () -> Unit = {}) = EL("MAIN") {
+        classes(classes)
+        body()
+    }
+
+    inline fun FIGURE(classes: String? = null, body: () -> Unit = {}) = EL("FIGURE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun FIGCAPTION(classes: String? = null, body: () -> Unit = {}) = EL("FIGCAPTION") {
+        classes(classes)
+        body()
+    }
+
+    inline fun FIELDSET(classes: String? = null, body: () -> Unit = {}) = EL("FIELDSET") {
+        classes(classes)
+        body()
+    }
+
+    inline fun LEGEND(classes: String? = null, body: () -> Unit = {}) = EL("LEGEND") {
+        classes(classes)
+        body()
+    }
+
+    inline fun EM(classes: String? = null, body: () -> Unit = {}) = EL("EM") {
+        classes(classes)
+        body()
+    }
+
+    inline fun BLOCKQUOTE(classes: String? = null, body: () -> Unit = {}) = EL("BLOCKQUOTE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun CODE(classes: String? = null, body: () -> Unit = {}) = EL("CODE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun MARK(classes: String? = null, body: () -> Unit = {}) = EL("MARK") {
+        classes(classes)
+        body()
+    }
+
+    inline fun CITE(classes: String? = null, body: () -> Unit = {}) = EL("CITE") {
+        classes(classes)
+        body()
+    }
+
+    inline fun DL(classes: String? = null, body: () -> Unit = {}) = EL("DL") {
+        classes(classes)
+        body()
+    }
+
+    inline fun DT(classes: String? = null, body: () -> Unit = {}) = EL("DT") {
+        classes(classes)
+        body()
+    }
+
+    inline fun DD(classes: String? = null, body: () -> Unit = {}) = EL("DD") {
         classes(classes)
         body()
     }
@@ -503,6 +594,11 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun id(value: String?) = value?.let { attr("id", value) }
     fun id(value: UUID?) = value?.let { attr("id", value) }
     fun rel(value: String?) = attr("rel", value)
+    fun relStylesheet() = rel("stylesheet")
+    fun relNofollow() = rel("nofollow")
+    fun relNoopener() = rel("noopener")
+    fun relNoreferrer() = rel("noreferrer")
+    fun relIcon() = rel("icon")
     fun src(value: String?) = attr("src", value)
     fun width(value: Int?) = attr("width", value)
     fun height(value: Int?) = attr("height", value)
@@ -674,7 +770,14 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
 
     fun method(value: String?) = value?.let { attr("method", value) }
     fun enctype(value: String?) = value?.let { attr("enctype", value) }
+    fun enctypeMultipartFormData() = enctype("multipart/form-data")
+    fun enctypeUrlEncoded() = enctype("application/x-www-form-urlencoded")
+    fun enctypePlainText() = enctype("text/plain")
     fun target(value: String?) = value?.let { attr("target", value) }
+    fun targetBlank() = target("_blank")
+    fun targetSelf() = target("_self")
+    fun targetParent() = target("_parent")
+    fun targetTop() = target("_top")
 
     fun value(value: CharSequence?) = value?.let { attr("value", value) }
     fun value(value: Double?) = value?.let {
@@ -700,13 +803,25 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun step(value: String?) = value?.let { attr("step", value) }
     fun placeholder(value: String?) = value?.let { attr("placeholder", value) }
     fun scope(value: String?) = attr("scope", value)
-    /** value = "off" disable form autocomplete */
     fun autocomplete(value: String?) = attr("autocomplete", value)
+    fun autocompleteOff() = autocomplete("off")
+    fun autocompleteOn() = autocomplete("on")
     fun action(value: String?) = value?.let { attr("action", value) }
     fun accept(value: String?) = value?.let { attr("accept", value) }
     fun title(value: String?) = value?.let { attr("title", value) }
     fun forAttr(value: String?) = value?.let { attr("for", value) }
     fun role(value: String?) = value?.let { attr("role", value) }
+    fun size(value: Int?) = value?.let { attr("size", value) }
+    fun inputMode(value: String?) = value?.let { attr("inputmode", value) }
+    fun inputModeNone() = inputMode("none")
+    fun inputModeText() = inputMode("text")
+    fun inputModeDecimal() = inputMode("decimal")
+    fun inputModeNumeric() = inputMode("numeric")
+    fun inputModeTel() = inputMode("tel")
+    fun inputModeEmail() = inputMode("email")
+    fun inputModeUrl() = inputMode("url")
+    fun inputModeSearch() = inputMode("search")
+    fun alt(value: String?) = value?.let { attr("alt", value) }
 
     fun onSubmit(@Language("js") value: String?) = value?.let { attr("onsubmit", value) }
     fun onClick(@Language("js") value: String?) = value?.let { attr("onclick", value) }
@@ -714,6 +829,36 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
     fun onInput(@Language("js") value: String?) = value?.let { attr("oninput", value) }
     fun onPaste(@Language("js") value: String?) = value?.let { attr("onpaste", value) }
     fun onBlur(@Language("js") value: String?) = value?.let { attr("onblur", value) }
+    fun onFocus(@Language("js") value: String?) = value?.let { attr("onfocus", value) }
+    fun onKeyDown(@Language("js") value: String?) = value?.let { attr("onkeydown", value) }
+    fun onKeyUp(@Language("js") value: String?) = value?.let { attr("onkeyup", value) }
+    fun onKeyPress(@Language("js") value: String?) = value?.let { attr("onkeypress", value) }
+    fun onDblClick(@Language("js") value: String?) = value?.let { attr("ondblclick", value) }
+    fun onMouseDown(@Language("js") value: String?) = value?.let { attr("onmousedown", value) }
+    fun onMouseUp(@Language("js") value: String?) = value?.let { attr("onmouseup", value) }
+    fun onMouseEnter(@Language("js") value: String?) = value?.let { attr("onmouseenter", value) }
+    fun onMouseLeave(@Language("js") value: String?) = value?.let { attr("onmouseleave", value) }
+    fun onMouseMove(@Language("js") value: String?) = value?.let { attr("onmousemove", value) }
+    fun onMouseOver(@Language("js") value: String?) = value?.let { attr("onmouseover", value) }
+    fun onMouseOut(@Language("js") value: String?) = value?.let { attr("onmouseout", value) }
+    fun onContextMenu(@Language("js") value: String?) = value?.let { attr("oncontextmenu", value) }
+    fun onDrag(@Language("js") value: String?) = value?.let { attr("ondrag", value) }
+    fun onDragStart(@Language("js") value: String?) = value?.let { attr("ondragstart", value) }
+    fun onDragEnd(@Language("js") value: String?) = value?.let { attr("ondragend", value) }
+    fun onDragOver(@Language("js") value: String?) = value?.let { attr("ondragover", value) }
+    fun onDragEnter(@Language("js") value: String?) = value?.let { attr("ondragenter", value) }
+    fun onDragLeave(@Language("js") value: String?) = value?.let { attr("ondragleave", value) }
+    fun onDrop(@Language("js") value: String?) = value?.let { attr("ondrop", value) }
+    fun onReset(@Language("js") value: String?) = value?.let { attr("onreset", value) }
+    fun onInvalid(@Language("js") value: String?) = value?.let { attr("oninvalid", value) }
+    fun onScroll(@Language("js") value: String?) = value?.let { attr("onscroll", value) }
+    fun onWheel(@Language("js") value: String?) = value?.let { attr("onwheel", value) }
+    fun onTouchStart(@Language("js") value: String?) = value?.let { attr("ontouchstart", value) }
+    fun onTouchEnd(@Language("js") value: String?) = value?.let { attr("ontouchend", value) }
+    fun onTouchMove(@Language("js") value: String?) = value?.let { attr("ontouchmove", value) }
+    fun onLoad(@Language("js") value: String?) = value?.let { attr("onload", value) }
+    fun onError(@Language("js") value: String?) = value?.let { attr("onerror", value) }
+    fun onResize(@Language("js") value: String?) = value?.let { attr("onresize", value) }
 
     fun required(v: Boolean? = true) {
         if(v == true) attr("required")
