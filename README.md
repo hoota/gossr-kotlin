@@ -1,8 +1,6 @@
-# GOSSR Core — Good Old Server‑Side Rendering for Kotlin
+# GOSSR — Good Old Server‑Side Rendering for Kotlin
 
-## What is this module?
-
-**GOSSR Core** is a small, dependency‑minimal Kotlin library for **server‑side HTML rendering using pure Kotlin code**.
+**GOSSR** is a Kotlin library for **server‑side HTML rendering using pure Kotlin code**, with optional **Spring MVC integration**.
 
 It provides a strictly‑typed, refactor‑friendly DSL for generating HTML into an `Appendable` (`StringBuilder`, stream, writer, etc.) without templates, string concatenation, or framework coupling.
 
@@ -25,7 +23,7 @@ DIV {
 
 ## What problems does it try to solve?
 
-This module exists because of long‑standing pain points in classic server‑side rendering solutions:
+This project exists because of long‑standing pain points in classic server‑side rendering solutions:
 
 ### ❌ Template languages are not refactor‑safe
 Renaming a field, method, or model property often silently breaks HTML templates.
@@ -39,6 +37,12 @@ IDE navigation, refactoring, and static analysis work poorly across template bou
 ### ❌ Logic leaks into templates
 Conditional rendering and formatting logic often end up half‑implemented in a limited DSL.
 
+### ❌ String-based routing and URLs
+Classic Spring MVC relies heavily on string literals that break silently during refactoring.
+
+### ❌ Broken forms discovered too late
+The form renders fine, the user fills it in, presses Submit — and the backend rejects it.
+
 GOSSR addresses these issues by treating HTML generation as **normal Kotlin code**:
 - Full IDE support
 - Compile‑time safety
@@ -47,12 +51,15 @@ GOSSR addresses these issues by treating HTML generation as **normal Kotlin code
 
 ---
 
-## What does GOSSR Core provide?
+## What does GOSSR provide?
+
+### Core (framework‑agnostic)
 
 - A lightweight **HTML DSL** implemented in Kotlin
 - Output to any `Appendable`
 - Structured tag hierarchy (`DIV`, `SPAN`, `FORM`, `INPUT`, etc.)
 - Attribute helpers (`classes`, `id`, `style`, etc.)
+- HTML5 semantic tags, attribute helpers and event handlers
 - Safe escaping
 - Full access to Kotlin language features:
   - `if / when`
@@ -60,13 +67,19 @@ GOSSR addresses these issues by treating HTML generation as **normal Kotlin code
   - functions
   - extension functions
 
+### Spring MVC integration
+
+- **Type‑safe routes** instead of `@GetMapping` strings — URLs are derived from route classes, parameters are constructor arguments
+- **Refactor‑safe forms** — forms are rendered from route instances with correct parameter names and types
+- **Form contract validation** — missing fields are detected *during rendering*, before user interaction
+- **CSS lifecycle management** — CSS classes as Spring components, next to the code that uses them
+- **JVM Hot‑Reload support** — in most cases you don't need to restart your app to update HTML
+
 ---
 
 ## What does it intentionally NOT do?
 
-This is the most important part.
-
-### ❌ This is NOT a web framework
+### ❌ This is NOT a web framework (core)
 No routing, no controllers, no HTTP abstractions.
 
 ### ❌ This is NOT a template engine
@@ -78,26 +91,19 @@ No virtual DOM, no reactivity, no client‑side state management.
 ### ❌ This is NOT a replacement for CSS or JavaScript
 GOSSR generates HTML. Styling and client behavior are separate concerns.
 
-### ❌ This is NOT tied to Spring (or any other framework)
-This module has **zero framework dependencies**.
+### ❌ The Spring integration does NOT replace Spring MVC
+It builds on top of it.
 
 ---
 
 ## Design goals
 
-- **Minimal dependencies**
-  - `kotlin-stdlib-jdk8`
-  - `kotlin-reflect`
-  - `org.jetbrains.annotations`
+- **Minimal dependencies** (core): `kotlin-stdlib-jdk8`, `kotlin-reflect`, `org.jetbrains.annotations`
+- **Predictable behavior**: no magic, no code generation, no annotation processing
+- **Longevity**: designed for long‑lived projects, resistant to entropy and template rot
+- **Early failure**: detect problems at compile time or render time, not at submit time
 
-- **Predictable behavior**
-  - No magic
-  - No code generation
-  - No annotation processing
-
-- **Longevity**
-  - Designed for long‑lived projects
-  - Resistant to entropy and template rot
+---
 
 ## Performance and GC considerations
 
@@ -121,27 +127,255 @@ at compile time, eliminating unnecessary allocations and reducing GC load.
 As a result, rendering cost is very low, predictable and stable even for large pages,
 making GOSSR suitable for high-throughput server-side rendering and
 long-running applications.
+
 ---
 
-## Where does this module fit?
+## Using GOSSR views with Spring MVC
 
-GOSSR Core is the **foundation layer**.
+Controllers remain ordinary Spring MVC controllers.
 
-If you want:
-- framework integration
-- typed routing
-- Spring MVC support
-- forms, CSRF, CSS, and request binding
+```kotlin
+@Controller
+class Controller {
 
-→ see **Gossr for Kotlin & Spring**  
-https://github.com/hoota/gossr-kotlin-spring
+    @GetMapping("/hello")
+    fun hello(): View =
+        HelloWorldPage(
+            text = "world",
+            time = LocalDateTime.now()
+        )
+}
 
-This core module is intentionally framework‑agnostic and can be used in:
-- custom HTTP servers
-- CLI tools
-- static site generators
-- embedded environments
-- or as a building block for higher‑level integrations
+class HelloWorldPage(
+    val text: String,
+    val time: LocalDateTime
+) : GossSpringRenderer(), GossrSpringView {
+
+    override fun draw() {
+        DIV {
+            +"Hello $text"
+            BR()
+            formatDateTime(time)
+        }
+    }
+}
+```
+
+---
+
+## Type-safe routes instead of @GetMapping strings
+
+Routes are expressed as Kotlin classes:
+
+```kotlin
+data class MyGetRoute(
+    val param: String
+) : GetRoute
+```
+
+And handled using `@RouteHandler`:
+
+```kotlin
+@Controller // or @Component - this class just needs to be a Spring Bean
+@RouteHandler
+class Controller {
+
+    @RouteHandler
+    // this will created GET::/my/get endpoint
+    fun myEndpoint(route: MyGetRoute): View {
+        return HelloWorldPage(
+            text = route.param,
+            time = LocalDateTime.now()
+        )
+    }
+}
+```
+
+URLs are generated from route instances:
+
+```kotlin
+A {
+    // this will give "/my/get?param=World" URL
+    href(MyGetRoute("World"))
+    +"Click me"
+}
+```
+
+You can also override URL Prefix with `@PathPrefix`:
+```kotlin
+@PathPrefix("/any/uri/here")
+class MyUriRoute : GetRoute
+```
+or make some properties to be placed into path itself:
+```kotlin
+data class MyUriWithPathVarRoute(
+    @PathVariable
+    val id: String
+) : GetRoute // = "/my/uri/with/path/var/{id}"
+```
+
+---
+
+## Form rendering and route-backed forms
+
+Forms are rendered from route instances:
+
+```kotlin
+FORM(MyGetRoute(param = "initial")) { route ->
+    INPUT {
+        nameValueString(route::param)
+    }
+}
+```
+
+This guarantees:
+- correct parameter names
+- correct types
+- refactor-safe binding
+
+---
+
+## Form–Route contract validation (important)
+
+### The problem
+
+It is easy to forget to include a required route parameter in a form,
+especially when the field is hidden, nested, or conditional.
+
+### The solution
+
+When rendering a form, GOSSR can:
+
+- collect all field names rendered inside the form
+- compare them with required route properties
+- detect missing fields *during rendering*
+
+Required form properties are determined using Kotlin semantics:
+
+- non-null constructor parameters without default values → required
+- nullable or defaulted parameters → optional
+- `@ForceFormFieldPresentCheck` → always required
+
+Nested objects, lists and maps are also supported:
+- `property[...]`
+- `property.subfield`
+
+### Handling missing fields
+
+When a mismatch is detected, the framework calls:
+
+```kotlin
+open fun <R : Route> onRoutePropertyIsMissingInForm(
+    route: R,
+    missingProperties: List<KProperty1<*, *>>
+)
+```
+
+The default implementation does nothing.
+
+Application code may override this hook to:
+- disable the form
+- render an error banner
+- log or report the issue
+- notify developers (Slack, Sentry, etc.)
+- fail fast in development
+- play a loud sound from browser in dev mode :)
+
+This keeps UX and operational behavior **fully application-defined**.
+
+---
+
+## CSS lifecycle support (optional)
+
+CSS classes can be defined as Spring components:
+
+```kotlin
+@Component
+object MyCssClass : CssClass({
+    style = "color: red"
+    hover = "text-decoration: underline"
+
+    add(">a", "color: green;")
+
+    media("max-width: 991px") {
+        style = "color: green;"
+    }
+})
+```
+
+Used directly in views:
+
+```kotlin
+HEAD {
+    LINK(rel = "stylesheet", href = CssHelper.instance.getUrl())
+}
+
+...
+
+DIV(MyCssClass) {
+    +"Hello World"
+}
+```
+
+Benefits:
+- styles live next to the code that uses them
+- unused CSS is easy to detect and remove
+- responsive breakpoints can be Kotlin constants
+- long-lived projects avoid CSS entropy
+- **JVM Hot-Reload support** in Debug mode — generates new CSS file with new name on request
+
+---
+
+## Setup
+
+### Branches
+
+| Branch | Stack | Description |
+|--------|-------|-------------|
+| `main` | Framework‑agnostic | Core HTML DSL only |
+| `spring-boot-2` | Spring Boot 2 / Spring 5 / javax | Core + Spring MVC integration |
+| `spring-boot-3` | Spring Boot 3 / Spring 6 / jakarta | Core + Spring MVC integration |
+
+### Spring Boot 2 / 3
+
+Add dependency (Maven):
+
+```XML
+<dependency>
+    <groupId>kiss.gossr</groupId>
+    <artifactId>gossr-kotlin</artifactId>
+    <version>0.6.4</version>
+</dependency>
+```
+
+Register required infrastructure beans:
+
+```kotlin
+@Configuration
+class ProjectConfiguration {
+
+    @Bean
+    fun routesHelper(
+        handlerMapping: RequestMappingHandlerMapping,
+        applicationContext: ApplicationContext
+    ) = RoutesHelper(applicationContext, handlerMapping)
+
+    // Optional
+    @Bean
+    fun cssHelper(
+        handlerMapping: RequestMappingHandlerMapping,
+        applicationContext: ApplicationContext
+    ) = CssHelper(applicationContext, handlerMapping)
+}
+```
+
+---
+
+## Why Kotlin for UI rendering?
+
+Using Kotlin as the language for UI rendering means the full power of the language is available when building pages.
+
+You can use constants, collection iteration, ordinary functions that render reusable page fragments, and shared code exactly the same way you reuse business logic. UI blocks can be extracted into functions or base classes, extended or overridden through inheritance, and composed without introducing a separate template language. Control flow is expressed using normal `if / else`, `when`, `try / catch`, and loops — not limited or ad-hoc DSL constructs. As a result, UI code remains readable, testable, and refactor-friendly even as it grows in complexity.
 
 ---
 
@@ -154,84 +388,34 @@ GOSSR treats UI rendering as a normal, testable, refactorable Kotlin computation
 
 ---
 
-### Why Kotlin for UI rendering?
-
-Using Kotlin as the language for UI rendering means the full power of the language is available when building pages.
-
-You can use constants, collection iteration, ordinary functions that render reusable page fragments, and shared code exactly the same way you reuse business logic. UI blocks can be extracted into functions or base classes, extended or overridden through inheritance, and composed without introducing a separate template language. Control flow is expressed using normal `if / else`, `when`, `try / catch`, and loops — not limited or ad-hoc DSL constructs. As a result, UI code remains readable, testable, and refactor-friendly even as it grows in complexity.
-
-
 ## Why not Thymeleaf / JSX / classic templates?
-
-GOSSR Core does not exist because existing solutions are *bad*.  
-It exists because they make **different trade-offs**.
 
 ### Why not Thymeleaf / FreeMarker / Mustache?
 
 Classic server-side template engines are:
-
 - string-based
 - loosely typed or untyped
 - parsed at runtime
 - weakly connected to the Kotlin codebase
 
 Typical consequences in long-lived projects:
-
 - broken templates after refactoring
 - duplicated names (fields, URLs, CSS classes)
 - logic split between Kotlin and template DSLs
 - limited IDE support compared to real Kotlin code
 
 GOSSR removes the template layer entirely.
-HTML is generated by **ordinary Kotlin code**, so refactoring, navigation,
-and static analysis work exactly as everywhere else in the project.
-
----
 
 ### Why not JSX / frontend frameworks?
 
 JSX and modern frontend frameworks solve a different problem:
-
 - rich client-side interactivity
 - complex UI state management
 - partial page updates
-- heavy client-side logic
 
-They introduce:
+They introduce build pipelines, transpilation, hydration, runtime overhead, and duplicated contracts.
 
-- build pipelines
-- transpilation
-- hydration
-- runtime overhead
-- duplicated validation and contracts between backend and frontend
-
-GOSSR Core is intentionally **server-side first**.
-It is designed for:
-- SSR pages
-- internal tools
-- admin interfaces
-- data-heavy forms
-- environments where simplicity, predictability and correctness matter more than client-side dynamism
-
----
-
-### Why not templates at all?
-
-Templates look simple at first, but they introduce an extra language
-and an extra failure mode.
-
-GOSSR follows a different philosophy:
-
-> If something contains logic,  
-> it should be written in the main programming language.
-
-No parsing step.  
-No runtime expression language.  
-No magic context variables.
-
-Just Kotlin code producing HTML.
-
----
+GOSSR is intentionally **server-side first** — designed for SSR pages, internal tools, admin interfaces, data-heavy forms, and environments where simplicity and correctness matter.
 
 ### Summary
 
@@ -239,10 +423,9 @@ Just Kotlin code producing HTML.
 |-------|-------------|----------|
 | Templates | Designer-friendly markup | Weak typing, fragile refactoring |
 | JSX / SPA | Rich client interactivity | Complexity, duplication, runtime cost |
-| **GOSSR Core** | Correct, refactor-safe SSR | Less visual, more code |
+| **GOSSR** | Correct, refactor-safe SSR | Less visual, more code |
 
-GOSSR Core chooses **correctness, longevity, and explicitness** over convenience.
-
+---
 
 ## License
 
