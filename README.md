@@ -336,7 +336,7 @@ Benefits:
 | `spring-boot-2` | Spring Boot 2 / Spring 5 / javax | Core + Spring MVC integration |
 | `spring-boot-3` | Spring Boot 3 / Spring 6 / jakarta | Core + Spring MVC integration |
 
-### Spring Boot 2 / 3
+### Spring Boot 3
 
 Add dependency (Maven):
 
@@ -344,7 +344,7 @@ Add dependency (Maven):
 <dependency>
     <groupId>kiss.gossr</groupId>
     <artifactId>gossr-kotlin</artifactId>
-    <version>0.6.4</version>
+    <version>1.0.0-spring-boot-3</version>
 </dependency>
 ```
 
