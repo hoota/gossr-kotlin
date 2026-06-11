@@ -123,20 +123,23 @@ making GOSSR suitable for high-throughput server-side rendering and
 long-running applications.
 ---
 
+## Branches
+
+| Branch | Stack | Description |
+|--------|-------|-------------|
+| `main` | Framework‑agnostic | Core HTML DSL only, zero dependencies |
+| `spring-boot-2` | Spring Boot 2 / Spring 5 / javax | Core + Spring MVC integration |
+| `spring-boot-3` | Spring Boot 3 / Spring 6 / jakarta | Core + Spring MVC integration |
+
+---
+
 ## Where does this module fit?
 
-GOSSR Core is the **foundation layer**.
+This is the `main` branch — **framework‑agnostic core**.
 
-If you want:
-- framework integration
-- typed routing
-- Spring MVC support
-- forms, CSRF, CSS, and request binding
+If you want Spring MVC integration, typed routing, forms, CSRF, CSS lifecycle management — use the `spring-boot-2` or `spring-boot-3` branch.
 
-→ see **Gossr for Kotlin & Spring**  
-https://github.com/hoota/gossr-kotlin-spring
-
-This core module is intentionally framework‑agnostic and can be used in:
+This core module can be used in:
 - custom HTTP servers
 - CLI tools
 - static site generators

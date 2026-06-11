@@ -1,3 +1,4 @@
 target
 .idea
-gossr-kotlin.iml
+*.iml
+.DS_Store
