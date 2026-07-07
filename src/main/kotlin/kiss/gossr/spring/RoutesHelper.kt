@@ -160,7 +160,7 @@ class RoutesHelper(
         }
     }
 
-    fun <T : Route> addRoute(bean: Any, method: Method, type: Class<T>) {
+    fun <T : Route> addRoute(bean: Any?, method: Method?, type: Class<T>) {
         val requestMethods = listOfNotNull(
             if(GetRoute::class.java.isAssignableFrom(type)) RequestMethod.GET else null,
             if(PostRoute::class.java.isAssignableFrom(type)) RequestMethod.POST else null,
@@ -204,8 +204,8 @@ class RoutesHelper(
                 } ?: emptyList(),
             bean = bean,
             method = method,
-            annotations = method.annotations ?: emptyArray(),
-            conditions = getConditions(bean, type)
+            annotations = method?.annotations ?: emptyArray(),
+            conditions = bean?.let { getConditions(it, type) }
         )
     }
 
