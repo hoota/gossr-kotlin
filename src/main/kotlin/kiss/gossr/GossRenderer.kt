@@ -459,18 +459,22 @@ abstract class GossRenderer : GossrDateTimeFormatter, GossrMoneyFormatter {
         property: KProperty0<Boolean?>,
         withId: Boolean = false,
         body: () -> Unit = {}
-    ): String = INPUT {
-        type("checkbox")
-        name(property)
-        if(withId) id(property.name)
-        value("true")
-        checked(property.get())
-        body()
-    }.let {
-        property.name
+    ): String? {
+        val id = if(withId) "checkbox-${UUID.randomUUID()}" else null
+
+        INPUT {
+            type("checkbox")
+            name(property)
+            if(withId) id(id)
+            value("true")
+            checked(property.get())
+            body()
+        }
+
+        return id
     }
 
-    fun <T> CHECKBOX(
+    inline fun <T> CHECKBOX(
         property: KProperty0<Iterable<T>?>,
         value: T,
         withId: Boolean = false,
