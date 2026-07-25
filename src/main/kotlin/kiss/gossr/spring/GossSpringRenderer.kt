@@ -13,14 +13,14 @@ import kotlin.reflect.KProperty1
 @Suppress("FunctionNaming")
 open class GossSpringRenderer : GossRenderer() {
 
-    fun href(route: GetRoute) = attr("href", RoutesHelper.buildRouteUri(route))
+    fun href(route: GetRoute) = attr("href", RoutesHelper.getRouteUrl(route))
 
     inline fun <R : Route> FORM(
         route: R,
         checkRouteFieldsExistence: Boolean = true,
         body: (R) -> Unit,
     ) = EL("FORM") {
-        action(RoutesHelper.buildRouteUriPath(route))
+        action(RoutesHelper.getRouteUrlPath(route))
 
         val saved = context.formFieldNamesCollectionEnabled
 

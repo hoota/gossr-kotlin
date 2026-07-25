@@ -271,16 +271,16 @@ class Tests {
 
     @Test
     fun accessibilityCheck() {
-        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.buildRouteUri(TestRouteHandler.AccessibilityCheckRoute())))
+        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.getRouteUrl(TestRouteHandler.AccessibilityCheckRoute())))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
 
-        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.buildRouteUri(NotAccessibleController.RandomRoute())))
+        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.getRouteUrl(NotAccessibleController.RandomRoute())))
             .andExpect(MockMvcResultMatchers.status().isNotFound)
     }
 
     @Test
     fun testCss() {
-        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.buildRouteUri(TestRouteHandler.CssTestRoute())))
+        mockMvc.perform(MockMvcRequestBuilders.get(RoutesHelper.getRouteUrl(TestRouteHandler.CssTestRoute())))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().string("<DIV class=\"gossr-0\">Click Me</DIV>\n<DIV class=\"custom\">OK</DIV>\n"))
 
@@ -294,7 +294,7 @@ class Tests {
     @Test
     fun testGet() {
         val route = TestRouteHandler.SimpleRoute(a = 123, b = "Hello", c = UUID.randomUUID(), e = listOf(1,2,3))
-        val url = RoutesHelper.buildRouteUri(route)
+        val url = RoutesHelper.getRouteUrl(route)
 
         assertEquals("/simple/123?b=Hello&c=${route.c}&e=1&e=2&e=3", url)
 
@@ -312,7 +312,7 @@ class Tests {
     fun testPost() {
         val today = LocalDate.now()
         val route = TestRouteHandler.SimplePostRoute(a = 123, b = 1234.5678, c = today)
-        val url = RoutesHelper.buildRouteUriPath(route)
+        val url = RoutesHelper.getRouteUrlPath(route)
 
         assertEquals("/simple/post", url)
 
@@ -334,7 +334,7 @@ class Tests {
     @Test
     fun testPut() {
         val route = TestRouteHandler.SimplePutRoute()
-        val url = RoutesHelper.buildRouteUriPath(route)
+        val url = RoutesHelper.getRouteUrlPath(route)
 
         assertEquals("/simple/put", url)
 
@@ -349,7 +349,7 @@ class Tests {
     @Test
     fun testDel() {
         val route = TestRouteHandler.SimpleDeleteRoute()
-        val url = RoutesHelper.buildRouteUriPath(route)
+        val url = RoutesHelper.getRouteUrlPath(route)
 
         assertEquals("/simple/delete", url)
 
@@ -365,7 +365,7 @@ class Tests {
     fun missingFormFieldsTest() {
         val res = mockMvc.perform(
             MockMvcRequestBuilders.get(
-                RoutesHelper.buildRouteUriPath(TestRouteHandler.CheckFormRouteFieldsRoute())
+                RoutesHelper.getRouteUrlPath(TestRouteHandler.CheckFormRouteFieldsRoute())
             )
         )
             .andExpect(MockMvcResultMatchers.status().isOk())
@@ -375,7 +375,7 @@ class Tests {
     @Test
     fun testMulti() {
         val route = TestRouteHandler.SimpleMultiRoute()
-        val url = RoutesHelper.buildRouteUriPath(route)
+        val url = RoutesHelper.getRouteUrlPath(route)
 
         assertEquals("/simple/multi", url)
 
