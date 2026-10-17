@@ -369,6 +369,15 @@ class ProjectConfiguration {
 }
 ```
 
+Optional `RoutesHelper` constructor parameters:
+
+- `pathPrefix` — prefix prepended to all route bindings (default `"/"`)
+- `bindClassNamePaths` — additionally bind each route handler to a path made of its class simple name (default `false`)
+
+```kotlin
+RoutesHelper(applicationContext, handlerMapping, bindClassNamePaths = true)
+```
+
 ---
 
 ## Why Kotlin for UI rendering?

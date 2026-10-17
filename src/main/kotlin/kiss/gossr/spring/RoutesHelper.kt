@@ -70,7 +70,8 @@ annotation class AccessibleIf(
 class RoutesHelper(
     val applicationContext: ApplicationContext,
     val handlerMapping: RequestMappingHandlerMapping,
-    val pathPrefix: String = "/"
+    val pathPrefix: String = "/",
+    val bindClassNamePaths: Boolean = false,
 ) {
     val log: Logger = LoggerFactory.getLogger(javaClass)
     val routes = HashMap<Class<*>, HandlerInfo>()
@@ -126,12 +127,12 @@ class RoutesHelper(
         log.info("using ${options.patternParser?.javaClass?.simpleName ?: "AntPathMatcher"} to bind GOSSR endpoints")
 
         routes.values.forEach { r ->
-            val binding = r.binding
-            log.info("${r.routeClass.simpleName} is handled on ${r.requestMethods} :: $binding")
+            val binding = if(bindClassNamePaths) arrayOf(r.binding, r.routeClass.simpleName) else arrayOf(r.binding)
+            log.info("${r.routeClass.simpleName} is handled on ${r.requestMethods} :: ${binding.joinToString(" + ")}")
 
             handlerMapping.registerMapping(
                 RequestMappingInfo
-                    .paths(binding)
+                    .paths(*binding)
                     .methods(*r.requestMethods.toTypedArray())
                     .options(options)
                     .build(),
