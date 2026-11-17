@@ -125,11 +125,13 @@ long-running applications.
 
 ## Branches
 
+Spring MVC integration lives in separate branches of this repository:
+
 | Branch | Stack | Description |
 |--------|-------|-------------|
 | `main` | Framework‑agnostic | Core HTML DSL only, zero dependencies |
-| `spring-boot-2` | Spring Boot 2 / Spring 5 / javax | Core + Spring MVC integration |
-| `spring-boot-3` | Spring Boot 3 / Spring 6 / jakarta | Core + Spring MVC integration |
+| [`spring-boot-2`](https://github.com/hoota/gossr-kotlin/tree/spring-boot-2) | Spring Boot 2 / Spring 5 / javax | Core + Spring MVC integration |
+| [`spring-boot-3`](https://github.com/hoota/gossr-kotlin/tree/spring-boot-3) | Spring Boot 3 / Spring 6 / jakarta | Core + Spring MVC integration |
 
 ---
 
